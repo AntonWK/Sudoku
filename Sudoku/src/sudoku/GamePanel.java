@@ -23,17 +23,13 @@ class GamePanel extends Panel{
     private void createSudoku() {
         gridReset();
         int size = grid.length;
-        int min=0;
+        int min=1;
         int max = size;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 grid[i][j] = (int)(Math.random()*(max-min+1)+min);
-              /*  for (int k = 0; k < size; k++) {
-                if(grid[i][j]== grid[i][k]){
-                    grid[i][j] = (int)(Math.random()*(max-min+1)+min);
-                } if(grid[i][j]== grid[k][j]){
-                    grid[i][j] = (int)(Math.random()*(max-min+1)+min);
-                }*/
+                grid[i][j] = num(grid,i,j,max,min);    
+                
                 System.out.print(grid[i][j]+ "|");
                     }
         System.out.println();
@@ -50,6 +46,24 @@ class GamePanel extends Panel{
             }
             }
         
+    }
+    
+    static int num(int grid[][], int x,int y, int max, int min){
+        int[] l ={};
+        for (int i = 0; i < grid.length; i++) {
+            if(i!= grid[x][y]){
+                l[i]=i+1;
+            }
+        }//skapa lista med möjliga nummer
+        for (int i = 0; i < l.length; i++) {
+            if(grid[x][i] == l[i] || grid[i][y] == l[i]){
+                l = ArrayUtils.remove(l,i); // om nummer i listan av möjliga inte är möjliga, ta bort nummer
+            } else {
+                grid[x][y]= (int)(Math.random()*(max-min+1)+min);
+                return num(grid,x,y,max,min);
+            }
+        }
+        return 10;
     }
 
 }
