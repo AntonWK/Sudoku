@@ -6,20 +6,28 @@ import java.util.ArrayList;
 
 public class Game extends Panel {
 
+    int size = 6;
+    int grid[][] = createGrid(size);
     int remove = 10;
 
-    public Game() {
-        int size = 9;
-        int grid[][] = createGrid(size);
-        int origianlGrid[][] = grid;
-        //     int remove = 10;
+    public static void main(String[] args) {
+        Game game = new Game();
+        game.grid[0][1] = 1;
+        game.printSudoku(game.grid, 6);
+        boolean ok1= game.isNumberInBox(game.grid, 1, 0, 0, 6);
+        System.out.println(ok1);
+    }
 
-        setPreferredSize(new Dimension(800, 800));
-        if (createSudoku(grid, size)) {
-            printSudoku(grid, size);
-            removePeices(grid, origianlGrid);
-            printSudoku(grid, size);
-        }
+    public Game() {
+        int origianlGrid[][] = grid;
+
+//        setPreferredSize(new Dimension(800, 800));
+//        if (createSudoku(grid, size)) {
+//            printSudoku(grid, size);
+//            grid[rand(grid) - 1][rand(grid) - 1] = 0;
+//            removePeices(grid, origianlGrid);
+//            printSudoku(grid, size);
+//        }
     }
 
     protected static boolean isNumberInRow(int[][] grid, int num, int x) {
@@ -119,15 +127,9 @@ public class Game extends Panel {
         kolla hur många lösningar brädet har
         om den har 1 lösning, fortsätt till nästa nummer
          */
-        if (compareGrids(grid, originalGrid)) {
-            System.out.print("same ");
-            grid[rand(grid)-1][rand(grid)-1] = 0;
-        }
-
         System.out.print(remove + " ");
         printSudoku(grid, grid.length);
 
-        int solutions = 0;
         int x, y;
         do {
             x = rand(grid) - 1;
@@ -135,12 +137,15 @@ public class Game extends Panel {
         } while (grid[x][y] == 0);
         int tmp = grid[x][y];
 
+        int solutions = 0;
         for (int j = 0; j < grid.length; j++) {
             grid[x][y] = j + 1;
-            if (checkSolutions(grid)) {
+            int[][] tempGrid = grid;
+            if (checkSolutions(tempGrid, originalGrid)) {
                 solutions += 1;
             }
         }
+        System.out.print("solutions = " + solutions + "... ");
         if (solutions == 1) {
             if (remove != 0) {
                 remove -= 1;
@@ -148,13 +153,12 @@ public class Game extends Panel {
                 removePeices(grid, originalGrid);
             }
         } else if (remove != 0) {
-            System.out.println(solutions);
             grid[x][y] = tmp;
+            removePeices(grid, originalGrid);
         }
     }
 
-    private boolean checkSolutions(int originalGrid[][]) {
-        int[][] grid = originalGrid;
+    private boolean checkSolutions(int grid[][], int[][] originalGrid) /* behöver bli matad med en temp grid*/ {
         // kolla mängden lösningar med rekusion och skicka tillbacks true eller false
         // just nu skapar den bara en lösning
         //ArrayList<Integer> possibleSolutions = new ArrayList<Integer>();
@@ -164,11 +168,10 @@ public class Game extends Panel {
                     for (int numberToTry = 1; numberToTry < grid.length; numberToTry++) {
                         if (isValidPlacement(grid, numberToTry, x, y, grid.length)) {
                             grid[x][y] = numberToTry;
-                            if (checkSolutions(grid)) {
+                            if (checkSolutions(grid, originalGrid)) {
                                 return true;
                             } else {
                                 System.out.print("FFF ");
-
                                 grid[x][y] = 0;
                             }
                         }
@@ -196,5 +199,4 @@ public class Game extends Panel {
         }
         return true;
     }
-
 }
