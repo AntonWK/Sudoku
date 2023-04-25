@@ -2,32 +2,36 @@ package sudoku;
 
 import java.awt.Dimension;
 import java.awt.Panel;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Game extends Panel {
 
-    int size = 6;
+    int size = 4;
     int grid[][] = createGrid(size);
-    int remove = 10;
+    int remove = 3;
 
-    public static void main(String[] args) {
-        Game game = new Game();
-        game.grid[0][1] = 1;
-        game.printSudoku(game.grid, 6);
-        boolean ok1= game.isNumberInBox(game.grid, 1, 0, 0, 6);
-        System.out.println(ok1);
-    }
-
+//    public static void main(String[] args) {
+//        Game game = new Game();
+//        game.grid[0][1] = 2;
+//        game.printSudoku(game.grid, 6);
+//        boolean ok1= game.isNumberInBox(game.grid, 1, 0, 0, 6);
+//        System.out.println(ok1);
+//    }
     public Game() {
-        int origianlGrid[][] = grid;
+        int[][] originalGrid = new int[grid.length][grid[0].length];
+        for (int i = 0; i < grid.length; i++) {
+            for (int k = 0; k < grid[0].length; k++) {
+                originalGrid[i][k] = grid[i][k];
+            }
+        }
 
-//        setPreferredSize(new Dimension(800, 800));
-//        if (createSudoku(grid, size)) {
-//            printSudoku(grid, size);
-//            grid[rand(grid) - 1][rand(grid) - 1] = 0;
-//            removePeices(grid, origianlGrid);
-//            printSudoku(grid, size);
-//        }
+        setPreferredSize(new Dimension(800, 800));
+        if (createSudoku(grid, size)) {
+            printSudoku(grid, size);
+            grid[rand(grid) - 1][rand(grid) - 1] = 0;
+            removePieces(grid, originalGrid);
+            printSudoku(grid, size);
+        }
     }
 
     protected static boolean isNumberInRow(int[][] grid, int num, int x) {
@@ -48,12 +52,12 @@ public class Game extends Panel {
         return false;
     }
 
-    protected static boolean isNumberInBox(int[][] board, int num, int x, int y, int size) {
+    protected static boolean isNumberInBox(int[][] grid, int num, int x, int y, int size) {
         int boxX = x - x % (int) Math.sqrt(size);
         int boxY = y - y % (int) Math.sqrt(size);
         for (int i = boxX; i < boxX + (int) Math.sqrt(size); i++) {
             for (int j = boxY; j < boxY + (int) Math.sqrt(size); j++) {
-                if (board[i][j] == num) {
+                if (grid[i][j] == num) {
                     return true;
                 }
             }
@@ -120,7 +124,7 @@ public class Game extends Panel {
         return grid;
     }
 
-    private void removePeices(int[][] grid, int[][] originalGrid) {
+    private void removePieces(int[][] grid, int[][] originalGrid) {
 
         /* välj en random ruta
         är rutan != 0, tabort numret
@@ -134,13 +138,20 @@ public class Game extends Panel {
         do {
             x = rand(grid) - 1;
             y = rand(grid) - 1;
+            System.out.print(grid[x][y]);
         } while (grid[x][y] == 0);
         int tmp = grid[x][y];
 
         int solutions = 0;
         for (int j = 0; j < grid.length; j++) {
             grid[x][y] = j + 1;
-            int[][] tempGrid = grid;
+
+            int[][] tempGrid = new int[grid.length][grid[0].length];
+            for (int i = 0; i < grid.length; i++) {
+                for (int k = 0; k < grid[0].length; k++) {
+                    tempGrid[i][k] = grid[i][k];
+                }
+            }
             if (checkSolutions(tempGrid, originalGrid)) {
                 solutions += 1;
             }
@@ -150,11 +161,11 @@ public class Game extends Panel {
             if (remove != 0) {
                 remove -= 1;
                 grid[x][y] = 0;
-                removePeices(grid, originalGrid);
+                removePieces(grid, originalGrid);
             }
         } else if (remove != 0) {
             grid[x][y] = tmp;
-            removePeices(grid, originalGrid);
+            removePieces(grid, originalGrid);
         }
     }
 
@@ -165,7 +176,7 @@ public class Game extends Panel {
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid.length; y++) {
                 if (grid[x][y] == 0) {
-                    for (int numberToTry = 1; numberToTry < grid.length; numberToTry++) {
+                    for (int numberToTry = 1; numberToTry <= grid.length; numberToTry++) {
                         if (isValidPlacement(grid, numberToTry, x, y, grid.length)) {
                             grid[x][y] = numberToTry;
                             if (checkSolutions(grid, originalGrid)) {
