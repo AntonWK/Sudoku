@@ -3,7 +3,7 @@ package sudoku;
 import java.awt.*;
 import java.awt.event.*;
 
-public class Sudoku extends Frame{
+public class Sudoku extends Frame {
 
      GamePanel gp = new GamePanel();
 
@@ -13,8 +13,20 @@ public class Sudoku extends Frame{
         addWindowListener(wl());
         gp.requestFocus();
         setVisible(true);
+        run();
     }
      
+    public void run(){
+        while (true) {
+            gp.nextFrame();
+            gp.repaint();
+            try {
+                Thread.sleep(12);
+            } catch (Exception e) {
+            }
+        }
+    }
+    
      public static void main(String[] args) {
         new Sudoku();
     } 
