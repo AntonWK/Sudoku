@@ -5,9 +5,9 @@ import java.awt.event.*;
 
 public class Sudoku extends Frame {
 
-     GamePanel gp = new GamePanel();
+    SharedPanel gp = new StartPanel(this);
 
-    public Sudoku(){
+    public Sudoku() {
         add(gp);
         pack();
         addWindowListener(wl());
@@ -15,8 +15,27 @@ public class Sudoku extends Frame {
         setVisible(true);
         run();
     }
-     
-    public void run(){
+
+    static enum State { START, PLAYS, PLAYG, STOP }
+    
+    public void swithcState(State s) {
+        remove(gp);
+        switch(s){
+            case START:
+                gp = new StartPanel(this);
+                break;
+            case PLAYS:
+                gp = new GamePanel(this);
+                break;
+            case STOP:
+                //gameover screen
+                break;
+        }
+        add(gp);
+        revalidate();
+    }
+
+    public void run() {
         while (true) {
             gp.nextFrame();
             gp.repaint();
@@ -26,18 +45,18 @@ public class Sudoku extends Frame {
             }
         }
     }
-    
-     public static void main(String[] args) {
+
+    public static void main(String[] args) {
         new Sudoku();
-    } 
-     
-      private WindowListener wl() {
-        return new WindowAdapter(){
+    }
+
+    private WindowListener wl() {
+        return new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we) {
                 System.exit(0);
             }
-            
+
         };
     }
 }

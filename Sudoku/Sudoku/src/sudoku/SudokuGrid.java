@@ -1,36 +1,33 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package sudoku;
 
-/**
- *
- * @author anton
- */
 public class SudokuGrid {
-    
+
     public int gridSize;
     public int grid[][];
-    
-    public SudokuGrid(int size, int remove){
+    public int originalGrid[][];
+    public int solvedGrid[][];
+
+    public SudokuGrid(int size, int remove) {
         gridSize = size;
         grid = createGrid(size);
 
-    int[][] originalGrid = new int[grid.length][grid[0].length];
+        if (createSudoku(grid, size)) {
+            solvedGrid = new int[grid.length][grid[0].length];
+            for (int i = 0; i < grid.length; i++) {
+                for (int k = 0; k < grid[0].length; k++) {
+                    solvedGrid[i][k] = grid[i][k];
+                }
+            }
+            grid[rand(grid) - 1][rand(grid) - 1] = 0;
+            removePieces(grid, originalGrid, remove, size);
+        }
+        originalGrid = new int[grid.length][grid[0].length];
         for (int i = 0; i < grid.length; i++) {
             for (int k = 0; k < grid[0].length; k++) {
                 originalGrid[i][k] = grid[i][k];
             }
         }
-
- //       System.out.print("ok");
-        if (createSudoku(grid, size)) {
-           // printSudoku(grid, size);
-            grid[rand(grid) - 1][rand(grid) - 1] = 0;
-            removePieces(grid, originalGrid, remove, size);
-           // printSudoku(grid, size);
-        }
+        printSudoku(solvedGrid, size);
     }
 
     protected static boolean isNumberInRow(int[][] grid, int num, int x) {
@@ -119,11 +116,11 @@ public class SudokuGrid {
                 grid[x][y] = 0;
             }
         }
-      //  printSudoku(grid, size);
+        //  printSudoku(grid, size);
         return grid;
     }
 
-    private void removePieces(int[][] grid, int[][] originalGrid,int remove,int size) {
+    private void removePieces(int[][] grid, int[][] originalGrid, int remove, int size) {
         int x, y;
         do {
             x = rand(grid) - 1;
@@ -145,6 +142,14 @@ public class SudokuGrid {
                 solutions += 1;
             }
         }
+        for (int i = 0; i < grid.length; i++) {
+            for (int k = 0; k < grid[0].length; k++) {
+                if (grid[i][k] != 0 && grid[i][k] != solvedGrid[i][k]) {
+                    grid[i][k] = solvedGrid[i][k];
+                }
+            }
+        }
+
         if (solutions == 1) {
             if (remove != 1) {
                 remove -= 1;
@@ -153,11 +158,11 @@ public class SudokuGrid {
             }
         } else if (remove != 1) {
             grid[x][y] = tmp;
-            removePieces(grid, originalGrid,remove, size);
+            removePieces(grid, originalGrid, remove, size);
         }
     }
 
-    private boolean checkSolutions(int grid[][], int[][] originalGrid) /* behöver bli matad med en temp grid*/ {   
+    private boolean checkSolutions(int grid[][], int[][] originalGrid) /* behöver bli matad med en temp grid*/ {
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid.length; y++) {
                 if (grid[x][y] == 0) {
@@ -175,10 +180,10 @@ public class SudokuGrid {
                 }
             }
         }
-            return true;
+        return true;
     }
 
-    private boolean compareGrids(int[][] grid, int[][] originalGrid) {
+    public boolean compareGrids(int[][] grid, int[][] originalGrid) {
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid.length; y++) {
                 if (grid[x][y] != originalGrid[x][y]) {

@@ -1,26 +1,21 @@
 package sudoku;
 
-import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Panel;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 
-class GamePanel extends Panel implements MouseListener, KeyListener {
+class GamePanel extends SharedPanel implements MouseListener, KeyListener {
 
-    public int dimensions = 800;
-    BufferedImage bgi = new BufferedImage(dimensions, dimensions, BufferedImage.TYPE_INT_ARGB);
     Game game = new Game();
-    Point location = new Point();
+    Point location = new Point();    
 
-    public GamePanel() {
-        setPreferredSize(new Dimension(dimensions, dimensions));
+    public GamePanel(Sudoku s) {
+        super(s);
         location.setLocation(dimensions, dimensions);
-        addMouseListener(this);
+        addKeyListener(this);
     }
 
     void nextFrame() {
@@ -29,18 +24,23 @@ class GamePanel extends Panel implements MouseListener, KeyListener {
 
     public void paint(Graphics grphcs) {
         game.drawGrid(grphcs);
-    }
-
-    public void update(Graphics grphcs) {
-        bgi.getGraphics().clearRect(0, 0, bgi.getWidth(), bgi.getHeight());
-        paint(bgi.getGraphics());
-        grphcs.drawImage(bgi, 0, 0, null);
+        game.drawButtons(grphcs);        
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println("hej");
         location = e.getPoint();
+        if (game.checkGame.isPressed(e.getPoint())){
+            if(game.mySudoku.compareGrids(game.mySudoku.grid, game.mySudoku.solvedGrid)){
+            System.out.print("Done!");
+            }
+            else{
+             game.mySudoku.printSudoku(game.mySudoku.grid, 9);
+             sudoku.swithcState(Sudoku.State.GAMEOVER);
+            System.out.print("fail");
+            }
+            // game over?? victory??
+        }
     }
 
     @Override
@@ -65,9 +65,18 @@ class GamePanel extends Panel implements MouseListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("hej");
-        if (game.point.x < game.mySudoku.grid.length + 1 && game.point.y < game.mySudoku.grid.length + 1 && (int) e.getKeyChar() < game.mySudoku.grid.length + 2 && (int) e.getKeyChar() > 0) {
-            game.mySudoku.grid[game.point.x][game.point.y] = (int) e.getKeyChar();
+        if (game.point.x < game.mySudoku.grid.length
+                && game.point.y < game.mySudoku.grid.length
+                && Character.getNumericValue(e.getKeyChar()) <= game.mySudoku.grid.length
+                && game.mySudoku.originalGrid[game.point.x][game.point.y] == 0) {
+            int newNumb = Character.getNumericValue(e.getKeyCode());
+            try {
+                game.mySudoku.grid[game.point.x][game.point.y] = newNumb;
+            } catch (Exception m) {
+            }
+        }
+        if (e.getKeyCode() == 8 && game.mySudoku.originalGrid[game.point.x][game.point.y] == 0) {
+            game.mySudoku.grid[game.point.x][game.point.y] = 0;
         }
     }
 

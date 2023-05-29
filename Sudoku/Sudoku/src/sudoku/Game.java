@@ -2,6 +2,7 @@ package sudoku;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -9,6 +10,7 @@ import java.awt.Point;
 public class Game {
 
     SudokuGrid mySudoku = new SudokuGrid(9, 20);
+    Button checkGame = new Button(550, 50, 150, 50, "Done!", 12);
     Point point = new Point();
 
     public Game() {
@@ -18,6 +20,7 @@ public class Game {
     void drawGrid(Graphics grphcs) {
         int cellSize = 50;
         Graphics2D g = (Graphics2D) grphcs;
+        g.setFont(new Font("TimesRoman", Font.PLAIN, 12));
         g.setPaint(Color.WHITE);
         g.fillRect(0, 0, 800, 800);
         g.setPaint(Color.BLACK);
@@ -32,7 +35,14 @@ public class Game {
         }
         for (int i = 0; i < mySudoku.grid.length; i++) {
             for (int j = 0; j < mySudoku.grid.length; j++) {
-                g.drawString(Integer.toString(mySudoku.grid[i][j]), cellSize * j + (cellSize / 2 - 3), cellSize * i + (cellSize / 2) + 4);
+                if (mySudoku.grid[i][j] != 0) {
+                    if (mySudoku.originalGrid[i][j] != 0) {
+                        g.setPaint(Color.BLUE);
+                    } else {
+                        g.setPaint(Color.BLACK);
+                    }
+                    g.drawString(Integer.toString(mySudoku.grid[i][j]), cellSize * j + (cellSize / 2 - 3), cellSize * i + (cellSize / 2) + 4);
+                }
             }
         }
     }
@@ -52,5 +62,9 @@ public class Game {
             p.setLocation(x, y);
             return p;
         }
+    }
+
+    void drawButtons(Graphics grphcs) {
+        checkGame.drawcheckSolutionbutton(grphcs);
     }
 }
