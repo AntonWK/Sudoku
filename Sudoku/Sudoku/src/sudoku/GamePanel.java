@@ -9,11 +9,16 @@ import java.awt.event.MouseListener;
 
 class GamePanel extends SharedPanel implements MouseListener, KeyListener {
 
-    Game game = new Game();
+    Game game;
     Point location = new Point();    
 
-    public GamePanel(Sudoku s) {
+    public GamePanel(Sudoku s, boolean normal) {
         super(s);
+        if(normal){
+            game = new NormalSudoku();
+        } else {
+            game = new Gudoku();
+        }
         location.setLocation(dimensions, dimensions);
         addKeyListener(this);
     }
@@ -32,14 +37,11 @@ class GamePanel extends SharedPanel implements MouseListener, KeyListener {
         location = e.getPoint();
         if (game.checkGame.isPressed(e.getPoint())){
             if(game.mySudoku.compareGrids(game.mySudoku.grid, game.mySudoku.solvedGrid)){
-            System.out.print("Done!");
+            sudoku.swithcState(Sudoku.State.WIN);
             }
             else{
-             game.mySudoku.printSudoku(game.mySudoku.grid, 9);
-             sudoku.swithcState(Sudoku.State.GAMEOVER);
-            System.out.print("fail");
+            sudoku.swithcState(Sudoku.State.LOOSE);
             }
-            // game over?? victory??
         }
     }
 
@@ -69,9 +71,8 @@ class GamePanel extends SharedPanel implements MouseListener, KeyListener {
                 && game.point.y < game.mySudoku.grid.length
                 && Character.getNumericValue(e.getKeyChar()) <= game.mySudoku.grid.length
                 && game.mySudoku.originalGrid[game.point.x][game.point.y] == 0) {
-            int newNumb = Character.getNumericValue(e.getKeyCode());
             try {
-                game.mySudoku.grid[game.point.x][game.point.y] = newNumb;
+                game.uppdateNumber(e, game.point);
             } catch (Exception m) {
             }
         }

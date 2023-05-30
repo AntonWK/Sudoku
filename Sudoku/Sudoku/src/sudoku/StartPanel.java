@@ -10,7 +10,6 @@ class StartPanel extends SharedPanel implements MouseListener {
 
     public StartPanel(Sudoku s) {
         super(s);
-        
     }
 
     void nextFrame() {
@@ -25,6 +24,8 @@ class StartPanel extends SharedPanel implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         if(start.normalS.isPressed(e.getPoint())){
             sudoku.swithcState(Sudoku.State.PLAYS);
+        } else if (start.gudoku.isPressed(e.getPoint())){
+            sudoku.swithcState(Sudoku.State.PLAYG);
         }
     }
 

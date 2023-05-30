@@ -10,7 +10,6 @@ public class StartScreen {
 
     Button normalS = new Button(300, 190, 200, 50, "9X9 Sudoku", 20);
     Button gudoku = new Button(300, 280, 200, 50, "Gudoku", 20);
-    
 
     public StartScreen() {
 
@@ -33,5 +32,4 @@ public class StartScreen {
         normalS.drawcheckSolutionbutton(grphcs);
         gudoku.drawcheckSolutionbutton(grphcs);
     }
-
 }

@@ -16,7 +16,7 @@ public class Sudoku extends Frame {
         run();
     }
 
-    static enum State { START, PLAYS, PLAYG, STOP }
+    static enum State { START, PLAYS, PLAYG, WIN, LOOSE }
     
     public void swithcState(State s) {
         remove(gp);
@@ -25,10 +25,16 @@ public class Sudoku extends Frame {
                 gp = new StartPanel(this);
                 break;
             case PLAYS:
-                gp = new GamePanel(this);
+                gp = new GamePanel(this, true);
                 break;
-            case STOP:
-                //gameover screen
+            case PLAYG:
+                gp = new GamePanel(this, false);
+                break;
+            case WIN:
+                gp = new GameOver(this, true,gp);
+                break;
+            case LOOSE:
+                gp = new GameOver(this, false,gp);
                 break;
         }
         add(gp);

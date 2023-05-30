@@ -32,7 +32,6 @@ class Button {
         g.fillRect(x, y, w, h);
         g.setPaint(Color.BLACK);
         drawCenteredString(name,x,y,w,h, g);
-    //    g.drawCenteredString(name, x + w/2- 20 , y + h/2);
     }
     
     public void drawCenteredString(String s, int x1, int y1, int w, int h, Graphics g) {

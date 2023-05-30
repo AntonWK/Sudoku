@@ -27,7 +27,6 @@ public class SudokuGrid {
                 originalGrid[i][k] = grid[i][k];
             }
         }
-        printSudoku(solvedGrid, size);
     }
 
     protected static boolean isNumberInRow(int[][] grid, int num, int x) {
